@@ -87,4 +87,31 @@ public class Trie {
         }
         return current;
     }
+
+    private void remove(TrieNode current, String word, int index) {
+        if (index == word.length()) {
+            if (!current.isEndOfWord) {
+                return; // Word not found
+            }
+            current.isEndOfWord = false; // Unmark the end of word
+            return;
+        }
+
+        char ch = word.charAt(index);
+        TrieNode child = current.getChild(ch);
+        if (child == null) {
+            return; // Word not found
+        }
+
+        remove(child, word, index + 1);
+
+        // After returning from recursion, check if child can be removed
+        if (!child.isEndOfWord && child.getChildren().isEmpty()) {
+            current.getChildren().remove(ch); // Remove the child node
+        }
+    }
+
+    public void remove(String word) {
+        remove(root, word.toLowerCase(), 0);
+    }
 }

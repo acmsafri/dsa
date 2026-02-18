@@ -254,4 +254,219 @@ public class TrieTest {
         assertEquals(1, results.size());
         assertTrue(results.contains("java"));
     }
+
+    // ==================== Remove Tests ====================
+    @Test
+    public void testRemoveSingleWord() {
+        trie.insert("hello");
+        trie.remove("hello");
+        List<String> results = trie.search("hello");
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void testRemoveNonExistentWord() {
+        trie.insert("hello");
+        trie.remove("world");
+        // Should not throw exception, and hello should still be searchable
+        List<String> results = trie.search("hello");
+        assertEquals(1, results.size());
+        assertTrue(results.contains("hello"));
+    }
+
+    @Test
+    public void testRemoveWordFromMultipleWords() {
+        trie.insert("hello");
+        trie.insert("help");
+        trie.insert("heap");
+        trie.remove("help");
+
+        List<String> results = trie.search("he");
+        assertEquals(2, results.size());
+        assertTrue(results.contains("hello"));
+        assertTrue(results.contains("heap"));
+        assertFalse(results.contains("help"));
+    }
+
+    @Test
+    public void testRemoveOneWordWithCommonPrefix() {
+        trie.insert("car");
+        trie.insert("card");
+        trie.insert("care");
+        trie.remove("car");
+
+        // "car" should be removed but "card" and "care" should still exist
+        List<String> results = trie.search("ca");
+        assertEquals(2, results.size());
+        assertTrue(results.contains("card"));
+        assertTrue(results.contains("care"));
+        assertFalse(results.contains("car"));
+    }
+
+    @Test
+    public void testRemoveWordThatIsAPrefixOfAnother() {
+        trie.insert("test");
+        trie.insert("testing");
+        trie.remove("test");
+
+        List<String> results = trie.search("test");
+        assertEquals(1, results.size());
+        assertTrue(results.contains("testing"));
+        assertFalse(results.contains("test"));
+    }
+
+    @Test
+    public void testRemoveWordThatHasAnotherAsPrefix() {
+        trie.insert("test");
+        trie.insert("testing");
+        trie.remove("testing");
+
+        List<String> results = trie.search("test");
+        assertEquals(1, results.size());
+        assertTrue(results.contains("test"));
+        assertFalse(results.contains("testing"));
+    }
+
+    @Test
+    public void testRemoveAllWords() {
+        trie.insert("apple");
+        trie.insert("apricot");
+        trie.insert("application");
+
+        trie.remove("apple");
+        trie.remove("apricot");
+        trie.remove("application");
+
+        List<String> results = trie.search("a");
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void testRemoveCaseInsensitive() {
+        trie.insert("Hello");
+        trie.remove("hello");
+
+        List<String> results = trie.search("hello");
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void testRemoveAlreadyRemovedWord() {
+        trie.insert("test");
+        trie.remove("test");
+        trie.remove("test"); // Removing again should not cause issues
+
+        List<String> results = trie.search("test");
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void testRemoveFromLargeDataSet() {
+        String[] words = {"apple", "application", "apply", "apricot", "aquarium"};
+        for (String word : words) {
+            trie.insert(word);
+        }
+
+        trie.remove("application");
+        trie.remove("apricot");
+
+        List<String> results = trie.search("a");
+        assertEquals(3, results.size());
+        assertTrue(results.contains("apple"));
+        assertTrue(results.contains("apply"));
+        assertTrue(results.contains("aquarium"));
+        assertFalse(results.contains("application"));
+        assertFalse(results.contains("apricot"));
+    }
+
+    @Test
+    public void testRemoveAndReinsertWord() {
+        trie.insert("hello");
+        trie.remove("hello");
+        trie.insert("hello");
+
+        List<String> results = trie.search("hello");
+        assertEquals(1, results.size());
+        assertTrue(results.contains("hello"));
+    }
+
+    @Test
+    public void testRemovePartialWord() {
+        trie.insert("hello");
+        trie.remove("hel"); // "hel" is not a complete word in the trie
+
+        // "hello" should still exist
+        List<String> results = trie.search("hello");
+        assertEquals(1, results.size());
+        assertTrue(results.contains("hello"));
+    }
+
+    @Test
+    public void testRemoveEmptyString() {
+        trie.insert("");
+        trie.remove("");
+
+        List<String> results = trie.search("");
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void testRemoveSingleCharacterWord() {
+        trie.insert("a");
+        trie.insert("apple");
+        trie.remove("a");
+
+        List<String> results = trie.search("a");
+        assertEquals(1, results.size());
+        assertTrue(results.contains("apple"));
+        assertFalse(results.contains("a"));
+    }
+
+    @Test
+    public void testRemoveWordAndVerifyPrefixStillWorks() {
+        trie.insert("programming");
+        trie.insert("program");
+        trie.insert("progress");
+        trie.remove("program");
+
+        List<String> results = trie.search("pro");
+        assertEquals(2, results.size());
+        assertTrue(results.contains("programming"));
+        assertTrue(results.contains("progress"));
+        assertFalse(results.contains("program"));
+    }
+
+    @Test
+    public void testRemoveComplexHierarchy() {
+        // Build a complex word hierarchy
+        trie.insert("c");
+        trie.insert("ca");
+        trie.insert("cat");
+        trie.insert("cats");
+        trie.insert("car");
+        trie.insert("card");
+
+        // Remove "cat" - should not affect siblings
+        trie.remove("cat");
+
+        List<String> results = trie.search("c");
+        assertEquals(5, results.size());
+        assertTrue(results.contains("c"));
+        assertTrue(results.contains("ca"));
+        assertTrue(results.contains("cats"));
+        assertTrue(results.contains("card"));
+        assertFalse(results.contains("cat"));
+    }
+
+    @Test
+    public void testGetLastNodeAfterRemove() {
+        trie.insert("hello");
+        trie.remove("hello");
+
+        TrieNode node = trie.getLastNode("hello");
+        // After removal, the node might still exist but isEndOfWord should be false
+        if (node != null) {
+            assertFalse(node.isEndOfWord);
+        }
+    }
 }

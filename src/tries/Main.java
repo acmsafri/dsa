@@ -10,7 +10,7 @@ public class Main {
             trie.insert(word);
         }
 
-
+        trie.remove("carpooling");
         System.out.println("Done "+trie.search("c"));
     }
 }
