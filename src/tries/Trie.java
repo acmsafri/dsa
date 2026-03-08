@@ -88,6 +88,28 @@ public class Trie {
         return current;
     }
 
+    public String findLongestCommonPrefix(String[] words) {
+        if (words == null || words.length == 0) {
+            return "";
+        }
+
+        // Insert all words into the Trie
+        for (String word : words) {
+            insert(word);
+        }
+
+        StringBuilder longestPrefix = new StringBuilder();
+        TrieNode current = root;
+
+        while (current != null && current.getChildren().size() == 1 && !current.isEndOfWord) {
+            char ch = current.getChildren().iterator().next(); // Get the only child
+            longestPrefix.append(ch);
+            current = current.getChild(ch);
+        }
+
+        return longestPrefix.toString();
+    }
+
     private void remove(TrieNode current, String word, int index) {
         if (index == word.length()) {
             if (!current.isEndOfWord) {
