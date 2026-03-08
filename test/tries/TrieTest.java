@@ -469,4 +469,81 @@ public class TrieTest {
             assertFalse(node.isEndOfWord);
         }
     }
+    // ==================== Find Longest Common Prefix Tests ====================
+    @Test
+    public void testFindLongestCommonPrefixEmptyArray() {
+        String[] words = {};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixNullArray() {
+        String[] words = null;
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixSingleWord() {
+        String[] words = {"hello"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("hello", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixNoCommonPrefix() {
+        String[] words = {"abc", "def", "ghi"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixFullCommonPrefix() {
+        String[] words = {"flower", "flower", "flower"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("flower", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixPartialCommonPrefix() {
+        String[] words = {"flower", "flow", "flight"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("fl", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixCaseInsensitive() {
+        String[] words = {"Flower", "FLOW", "flight"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("fl", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixWithEmptyString() {
+        String[] words = {"", "abc", "def"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixAllEmptyStrings() {
+        String[] words = {"", "", ""};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixDifferentLengths() {
+        String[] words = {"a", "ab", "abc", "abcd"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("a", result);
+    }
+
+    @Test
+    public void testFindLongestCommonPrefixLargeSet() {
+        String[] words = {"interspecies", "interstellar", "interstate", "internet"};
+        String result = trie.findLongestCommonPrefix(words);
+        assertEquals("inter", result);
+    }
 }
