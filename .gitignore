@@ -46,3 +46,4 @@ versions.maven.backup.pom
 hs_err_pid*.log
 hs_err_pid*.log.zip
 core.*
+*.xml

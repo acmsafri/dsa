@@ -55,12 +55,12 @@ public class Main {
         System.out.println(tree.levelOrderTraversal());*/
 
 
-        Integer[] values={3,1,4,6,8,0,7};
+       /* Integer[] values={3,1,4,6,8,0,7};
         Tree tree=new Tree();
         Arrays.stream(values).toList().forEach(tree::insert);
         tree.inOrderTraversal();  //0,1,3,4,6,7,8
         System.out.println();
-        tree.morrisTraversal(); //0,1,3,4,6,7,8
+        tree.morrisTraversal(); //0,1,3,4,6,7,8*/
 
     }
 }
