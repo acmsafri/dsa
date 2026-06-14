@@ -10,7 +10,7 @@ enum Direction{
 public class Graph {
 
 
-    private class Node{
+    public class Node{
        private String value;
 
         public Node(String value) {
@@ -19,16 +19,17 @@ public class Graph {
 
         @Override
         public String toString() {
-            return super.toString();
+            return value;
         }
     }
 
     private HashMap<String,Node> nodes=new HashMap<>();
     private HashMap<Node, List<Node>> adjList=new HashMap<>();
 
-    public void addNode(String value){
+    public Node addNode(String value){
         Node node=new Node(value);
         nodes.put(value, node);
+        return node;
     }
 
     public void addEdge(String from, String to,Direction direction){
@@ -42,6 +43,32 @@ public class Graph {
         if(Direction.BIDIRECTION.equals(direction)){
             adjList.computeIfAbsent(toNode, k -> new java.util.ArrayList<>()).add(fromNode);
         }
+    }
+
+    public List<Node> getBFS(Node start) {
+        List<Node> result = new java.util.ArrayList<>();
+        java.util.Queue<Node> queue = new java.util.LinkedList<>();
+        java.util.Set<Node> visited = new java.util.HashSet<>();
+
+        queue.add(start);
+        visited.add(start);
+
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+            result.add(current);
+
+            List<Node> neighbors = adjList.get(current);
+            if (neighbors != null) {
+                for (Node neighbor : neighbors) {
+                    if (!visited.contains(neighbor)) {
+                        visited.add(neighbor);
+                        queue.add(neighbor);
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     @Override
